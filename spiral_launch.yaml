@@ -11,5 +11,5 @@ launch:
     name: "controller"
 
     remap:
-    - from: "/output/cmd_vel"
+    - from: "/spiral/cmd_vel"
       to: "/turtlesim/turtle1/cmd_vel"
