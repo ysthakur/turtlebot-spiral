@@ -1,0 +1,15 @@
+launch:
+- node:
+    pkg: "turtlesim"
+    exec: "turtlesim_node"
+    name: "sim"
+    namespace: "turtlesim"
+
+- node:
+    pkg: "spiral"
+    exec: "spiral_controller"
+    name: "controller"
+
+    remap:
+    - from: "/output/cmd_vel"
+      to: "/turtlesim/turtle1/cmd_vel"
