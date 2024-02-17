@@ -10,11 +10,11 @@ Pose = namedtuple("Pose", "x y angle")
 
 class Controller(Node):
 
-    def __init__(self, dt, dtheta, size):
+    def __init__(self, dt, v, size):
         super().__init__("spiral_controller")
         self.publisher_ = self.create_publisher(Twist, "spiral/cmd_vel", 10)
         self.dt = dt
-        self.dtheta = dtheta
+        self.v = v
         self.size = size
         self.timer = self.create_timer(self.dt, self.timer_callback)
         self.pose = Pose(0.0, 0.0, 0.0)
@@ -27,10 +27,6 @@ class Controller(Node):
         angle = theta + pi / 2
         return Pose(x, y, angle)
 
-    # todo this isn't actually accurate for a spiral
-    def chord_len(self, r):
-        self.dtheta / (2 * pi) * r
-
     def twist_between(self, p1, p2):
         return Twist(
             linear=Vector3(x=sqrt((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2) / self.dt, y=0.0, z=0.0),
@@ -38,7 +34,9 @@ class Controller(Node):
         )
 
     def timer_callback(self):
-        theta2 = self.theta + self.dtheta
+        r = self.size = self.theta
+        max_dtheta = self.v * self.dt * 2 * pi / r
+        theta2 = self.theta + max_dtheta
         r2 = self.size * theta2
         x2 = r2 * cos(theta2)
         y2 = r2 * sin(theta2)
@@ -54,7 +52,7 @@ class Controller(Node):
 def main(args=None):
     rclpy.init(args=args)
 
-    controller = Controller(dt=0.5, dtheta=0.8, size=0.15)
+    controller = Controller(dt=0.5, v=1.0, size=0.15)
 
     rclpy.spin(controller)
 
