@@ -36,9 +36,9 @@ class Controller(Node):
     def timer_callback(self):
         r = self.size * self.theta
         if r == 0:
-            max_dtheta = 0.1
+            max_dtheta = 0.5
         else:
-            max_dtheta = max(0.2, self.v * self.dt * 2 * pi / r)
+            max_dtheta = self.v * self.dt * 2 * pi / r
         theta2 = self.theta + max_dtheta
         r2 = self.size * theta2
         x2 = r2 * cos(theta2)
