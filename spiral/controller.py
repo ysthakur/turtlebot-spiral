@@ -34,8 +34,11 @@ class Controller(Node):
         )
 
     def timer_callback(self):
-        r = self.size = self.theta
-        max_dtheta = self.v * self.dt * 2 * pi / r
+        r = self.size * self.theta
+        if r == 0:
+            max_dtheta = 0.1
+        else:
+            max_dtheta = max(0.2, self.v * self.dt * 2 * pi / r)
         theta2 = self.theta + max_dtheta
         r2 = self.size * theta2
         x2 = r2 * cos(theta2)
@@ -52,7 +55,7 @@ class Controller(Node):
 def main(args=None):
     rclpy.init(args=args)
 
-    controller = Controller(dt=0.5, v=1.0, size=0.15)
+    controller = Controller(dt=0.3, v=0.4, size=0.1)
 
     rclpy.spin(controller)
 
